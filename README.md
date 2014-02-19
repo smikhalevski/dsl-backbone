@@ -1,4 +1,6 @@
-# Ehony DSL
+<img src="ehony.png"/>
+
+# DSL Backbone
 
 Handy approach to create Java and XML-based fluent domain specific languages.
 
