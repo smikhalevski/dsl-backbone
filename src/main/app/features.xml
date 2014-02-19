@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ┌──┐
+  │  │
+  │Eh│ony
+  └──┘
+  -->
+<features name="${project.groupId}" xmlns="http://karaf.apache.org/xmlns/features/v1.0.0">
+    <feature name="${project.groupId}.${project.artifactId}" version="${project.version}">
+        <bundle start="false">mvn:${project.groupId}/${project.artifactId}/${project.version}</bundle>
+    </feature>
+</features>

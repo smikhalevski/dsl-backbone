@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  ┌──┐
+  │  │
+  │Eh│ony
+  └──┘
+  -->
+<car xmlns="http://example.org/" id="my-car" brand="Porsche">
+    <engine id="M28.01" gears="5"/>
+</car>
