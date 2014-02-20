@@ -1,6 +1,4 @@
-![Ehony](ehony.png)
-
-# DSL Backbone
+# Java DSL Backbone
 
 Handy approach to create your own Java and XML-based [fluent][1] [domain specific languages][2].
 
@@ -131,3 +129,7 @@ The code is available under [MIT licence](LICENSE.txt).
 
 [1]: http://en.wikipedia.org/wiki/Fluent_interface
 [2]: http://www.javaworld.com/article/2077865
+
+![Ehony](ehony.png)
+
+Standalone component of Ehony framework.
