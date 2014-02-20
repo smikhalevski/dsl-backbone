@@ -1,19 +1,22 @@
-<img src="ehony.png"/>
+![Ehony](ehony.png)
 
 # DSL Backbone
 
-Handy approach to create Java and XML-based fluent domain specific languages.
+Handy approach to create your own Java and XML-based [fluent][1] [domain specific languages][2].
 
-## Fluent API Example
+**Contents**
 
-DSL consists of tags just like a regular XML.
-To implement new simple DSL tag extend `org.ehony.dsl.BaseTag<Type, Parent>`:
+1. [Example](#example)
+2. [Serialization](#serialization)
+3. [Tag Context](#tag-context)
+4. [Features](#features)
+5. [License](#license)
 
-```java
-class Engine extends BaseTag<Engine, Car> {&hellip;}
-```
+## Example
 
-Use [method chaining](http://en.wikipedia.org/wiki/Method_chaining) technique to create your fluent API:
+In terms of this library DSL consists of tags just like XML. Tags encapsulate functionality context and are regular Java classes which must implement `org.ehony.dsl.api.Tag` interface.
+
+Easiest way to create new tag is to extend `org.ehony.dsl.BaseTag`:
 
 ```java
 class Engine extends BaseTag<Engine, Car> {
@@ -23,15 +26,16 @@ class Engine extends BaseTag<Engine, Car> {
 
     public Engine gears(int gears) {
         this.gears = gears;
-        return this; // Chaining is now possible. 
+        return this; // Method chaining is now possible. 
     }
 }
 ```
 
-Omit `javax.xml.bind.annotation` annotations if you are not planning to store your DSL in XML format.
+This class represents `Engine` tag which can be a child of `Car` tag. Note that `Engine.gears(int)` method returns `this` allowing end user to [chain method invocations](http://en.wikipedia.org/wiki/Method_chaining) of `Engine` class.
 
-`Parent` parameter of `BaseTag` must be of `org.ehony.dsl.ContainerTag` type.
-`ContainerTag` is an interface that DSL tags must implement in order to support addition, removal and replacement of child tags.
+You can omit `javax.xml.bind.annotation.*` annotations if you are not planning to store your DSL in XML format.
+
+In order to hold child tags, `Car` tag must be of type `org.ehony.dsl.ContainerTag` which is an interface that DSL tags implement to support addition, removal and replacement of child elements.
 
 ```java
 public class Car extends ContainerBaseTag<Car, ContainerTag> {
@@ -48,16 +52,14 @@ public class Car extends ContainerBaseTag<Car, ContainerTag> {
 }
 ```
 
-`ContainerBaseTag.appendChild(Tag)` simplifies appending of another child tag to container.
-If provided tag is already a child of container it is added to, then it is moved to the end of the list of children.
-If provided tag is the child of another container it is first detached from its previous parent and then attached to this container.
+`ContainerBaseTag.appendChild(Tag)` simplifies appending of new children to container. If provided tag is already a child of container it is added to, then it is moved to the end of the list of children. If provided tag is the child of another container it is first detached from its previous parent and then attached to this container.
 
-Car [fluent API](http://en.wikipedia.org/wiki/Fluent_interface) is now ready to use:
+Fluent API is now ready to use:
 
 ```java
-new Car()
+Car car = new Car()
         .id("my-car")
-        .engine() // Enter engine tag context.
+        .engine() // Enter engine context.
             .id("M28.01")
             .gears(5)
             .end() // Jump back to car context.
@@ -65,25 +67,25 @@ new Car()
         .attribute("color", "black")
 ```
 
-## XML Serialization
+Tag context handling, additional attributes, parent-child relationships and other low-level stuff are handled under-the-hood.
 
-To enable serialization add `package-info.java` to package with `Car` and `Engine` classes:
+## Serialization
+
+To enable XML serialization add `package-info.java` to package with `Car` and `Engine` classes:
 
 ```java
-@XmlSchema(namespace = "http://example.org/", elementFormDefault = XmlNsForm.QUALIFIED)
-@XmlAccessorType(XmlAccessType.PUBLIC_MEMBER)
+@XmlSchema(namespace = "http://example.org/")
 package org.example;
-
 import javax.xml.bind.annotation.*;
 ```
 
-Store `Car` instance in an XML format:
+Store `Car` instance in XML format:
 
 ```java
 javax.xml.bind.JAXBContext.newInstance(Car.class).createMarshaller().marshal(car, System.out);
 ```
 
-Output:
+Output (manually formatted):
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -92,39 +94,40 @@ Output:
 </car>
 ```
 
-## Using Tag Context
+## Tag Context
 
-Tags have bound instance of `TagContext` and may share same object in their life cycle.
+Tags have bound instance of `org.ehony.dsl.api.TagContext` and may share same beans in their life cycle.
  
 ```java
 BasicTagContext context = new BasicTagContext();
 context.registerBean("myBean", "Test");
-
 car.setContext(context);
 ```
 
-Now all descendant tags of `car` instance can access registered bean:
+Now all descendant tags of `car` instance can access bean `myBean` of type `java.lang.String`.
 
 ```java
-car.engine().getContext().getBean("myBean", String.class)
+car.getChildren().get(0).getContext().getBean("myBean", String.class)
 ```
 
-This allows to inject various bean providers into your DSL.
-See `org.ehony.dsl.extenders.BeanReferenceBaseTag` for more info on bean wiring.
+This allows to inject various bean providers into your API.
+
+DSL Backbone is shipped with several extenders which allow speeding up development of common tasks, such as character encoding and context bean referencing. See `org.ehony.dsl.extenders` package for more info.
 
 ## Features
 
-- OSGi-compatible manifest and `features.xml`.
-- XML serialization support out of the box.
+- OSGi compatible.
+- Serialization support out of the box.
 - Single dependency.
 - Fully documented.
-- Easy integration with [Spring](http://spring.io) and other bean containers.
-- Add unique identifiers with `BaseTag.id(String)`.
-- Use `Tag#end()` method to jump back to parent tag context. For a [root tag](http://en.wikipedia.org/wiki/Root_element) this method returns `null`.  
-- Add arbitrary attributes for your DSL tags with `BaseTag.attribute(QName, Object)`.
-- Override `BaseTag.validate()` method to allow extensive validation.
-- Implement specific child configuration strategy via overriding `ContainerBaseTag.configureChild(Tag)`.
+- Integration with [Spring](http://spring.io) and other bean containers.
+- Easily add extensive validation.
+- Implement specific tag configuration strategies depending on context.
+- Add arbitrary attributes for your DSL tags and keep them transparently serialized.
 
 ## License
 
 The code is available under [MIT licence](LICENSE.txt).
+
+[1]: http://en.wikipedia.org/wiki/Fluent_interface
+[2]: http://www.javaworld.com/article/2077865
