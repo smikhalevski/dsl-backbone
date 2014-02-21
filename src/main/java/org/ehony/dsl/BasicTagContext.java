@@ -11,7 +11,7 @@ import org.ehony.dsl.api.TagContext;
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.*;
 
-import static org.apache.commons.lang3.Validate.*;
+import static org.ehony.dsl.util.Validate.*;
 
 @XmlTransient
 public class BasicTagContext implements TagContext

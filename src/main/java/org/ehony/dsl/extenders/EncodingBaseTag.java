@@ -11,11 +11,10 @@ import org.ehony.dsl.api.ContainerTag;
 
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.*;
-import java.io.Serializable;
+import java.io.*;
 import java.nio.charset.*;
 
-import static org.apache.commons.lang3.SerializationUtils.serialize;
-import static org.apache.commons.lang3.Validate.notNull;
+import static org.ehony.dsl.util.Validate.notNull;
 
 /**
  * Abstract tag-based mixin support of optional <code>encoding</code> attribute.
@@ -93,9 +92,24 @@ public class EncodingBaseTag<
             return charset.encode(obj.toString()).array();
         }
         if (obj instanceof Serializable) {
-            return serialize((Serializable) obj);
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream(512);
+            
+            ObjectOutputStream out = null;
+            try {
+                out = new ObjectOutputStream(bytes);
+                out.writeObject(obj);
+                return bytes.toByteArray();
+            } catch (IOException e) {
+                throw new IllegalArgumentException("Cannot serialize " + obj, e);
+            } finally {
+                try {
+                    out.close();
+                } catch (Exception ex) {
+                    // Quiet
+                }
+            }
         }
-        throw new IllegalArgumentException("Serializable object expected but " + obj + " found.");
+        throw new IllegalArgumentException("Serializable expected but " + obj + " found.");
     }
     
     // <editor-fold desc="Fluent API">
@@ -145,7 +159,7 @@ public class EncodingBaseTag<
     // <editor-fold desc="Debug">
 
     @Override
-    public String getDebugInfo() {
+    protected String getDebugInfo() {
         return super.getDebugInfo() + "\nencoding = " + getEncoding();
     }
 

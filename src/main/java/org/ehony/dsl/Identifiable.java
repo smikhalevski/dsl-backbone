@@ -9,8 +9,7 @@ package org.ehony.dsl;
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.*;
 
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.apache.commons.lang3.Validate.notBlank;
+import static org.ehony.dsl.util.Validate.notBlank;
 
 /**
  * Abstract mixin support of optional <code>id</code> attribute.
@@ -39,10 +38,6 @@ public class Identifiable<Type extends Identifiable<Type>>
     public void setId(String id) {
         notBlank(id, "Nonempty identifier expected.");
         this.id = id;
-    }
-    
-    public boolean hasIdentifier() {
-        return isNotBlank(id);
     }
 
     // <editor-fold desc="Fluent API"> 

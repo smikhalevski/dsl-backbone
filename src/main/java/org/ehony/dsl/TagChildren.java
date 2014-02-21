@@ -11,7 +11,7 @@ import org.ehony.dsl.api.*;
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.*;
 
-import static org.apache.commons.lang3.Validate.notNull;
+import static org.ehony.dsl.util.Validate.notNull;
 
 /**
  * List of tags which ensure that all its items have the same parent.

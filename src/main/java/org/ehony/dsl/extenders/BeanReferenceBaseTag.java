@@ -12,9 +12,7 @@ import org.ehony.dsl.api.ContainerTag;
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.*;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-import static org.apache.commons.lang3.StringUtils.*;
-import static org.apache.commons.lang3.Validate.*;
+import static org.ehony.dsl.util.Validate.*;
 
 /**
  * Base for tags that reference beans defined in context.
@@ -100,7 +98,7 @@ public class BeanReferenceBaseTag<
     @XmlAttribute(name = "bean", required = true)
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     public String getBeanRef() {
-        return defaultIfBlank(beanRef, null);
+        return beanRef;
     }
 
     /**
@@ -120,7 +118,10 @@ public class BeanReferenceBaseTag<
      * Return required bean class iff was set or {@link Object} class.
      */
     private Class<?> getRawClass() {
-        return defaultIfNull(type, Object.class);
+        if (type == null) {
+            return Object.class;
+        }
+        return type;
     }
 
     /**
@@ -131,7 +132,7 @@ public class BeanReferenceBaseTag<
     @XmlTransient
     @SuppressWarnings("unchecked")
     public Bean getBean() {
-        if (isNotBlank(beanRef)) {
+        if (beanRef != null) {
             setBean((Bean) getContext().getBean(beanRef, getRawClass()));
         }
         return bean;
@@ -142,7 +143,8 @@ public class BeanReferenceBaseTag<
      */
     @SuppressWarnings("unchecked")
     public final void setBean(Bean bean) {
-        isInstanceOf(getRawClass(), bean);
+        Class<?> type = getRawClass();
+        isInstanceOf(type, bean, "Expected bean of " + type);
         this.beanRef = null;
         this.bean = bean;
         this.type = (Class<Bean>) bean.getClass();
@@ -151,15 +153,15 @@ public class BeanReferenceBaseTag<
     @Override
     public void validate() throws Exception {
         super.validate();
-        validState(isNotBlank(beanRef) || bean != null, "Bean reference or instance of " + getRawClass() + " required: " + this);
+        validState(beanRef != null || bean != null, "Bean reference or instance of " + getRawClass() + " required: " + this);
     }
 
     // <editor-fold desc="Debug">
 
     @Override
-    public String getDebugInfo() {
+    protected String getDebugInfo() {
         String info = super.getDebugInfo(); 
-        if (isNotBlank(beanRef)) {
+        if (beanRef != null) {
             info += "\nref = " + beanRef + "\ntype = " + getRawClass().getName();
         } else {
             info += "\nbean = " + bean;

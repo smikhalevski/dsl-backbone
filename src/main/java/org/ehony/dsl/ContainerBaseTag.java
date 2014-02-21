@@ -11,8 +11,6 @@ import org.ehony.dsl.api.*;
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.List;
 
-import static org.apache.commons.lang3.StringUtils.join;
-
 @XmlTransient
 public class ContainerBaseTag<
         Type extends ContainerBaseTag<Type, Parent>,
@@ -62,7 +60,11 @@ public class ContainerBaseTag<
     protected String getDebugInfo() {
         String out = super.getDebugInfo();
         if (!children.isEmpty()) {
-            out += "\nchildren = [\n\t" + join(children, ",\n").replace("\n", "\n\t") + "\n]";
+            StringBuilder code = new StringBuilder();
+            for (Tag<Type> tag : children) {
+                code.append(",\n").append(tag);
+            }
+            out += "\nchildren = [\n\t" + code.substring(2).replace("\n", "\n\t") + "\n]";
         }
         return out;
     }

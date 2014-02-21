@@ -14,8 +14,8 @@ import javax.xml.namespace.QName;
 import java.beans.Introspector;
 import java.util.*;
 
-import static org.apache.commons.lang3.StringUtils.*;
-import static org.apache.commons.lang3.Validate.*;
+import static org.ehony.dsl.util.Validate.*;
+import static org.ehony.dsl.util.StringUtils.*;
 
 /**
  * Tag is a mixin with optional identifier assignment and arbitrary attributes.
@@ -49,7 +49,7 @@ public class BaseTag<
     @XmlTransient
     public String getTagName() {
         if (isBlank(name)) {
-            return Introspector.decapitalize(stripEnd(getClass().getSimpleName(), "Tag"));
+            return Introspector.decapitalize(getClass().getSimpleName());
         } else {
             return name;
         }
@@ -80,7 +80,7 @@ public class BaseTag<
     @SuppressWarnings("unchecked")
     public Parent setParent(Parent parent) {
         for (Tag tag = parent; tag != null; tag = tag.getParent()) {
-            isTrue(tag != this, "Detected cyclic dependency.");
+            validState(tag != this, "Detected cyclic dependency.");
         }
         Parent tag = this.parent;
         if (parent != tag) {
@@ -209,14 +209,14 @@ public class BaseTag<
      */
     protected String toString(String info) {
         String out = getTagName();
-        if (hasIdentifier()) {
+        if (getId() != null) {
             out += "#" + getId();
         } else {
             out += "@" + Integer.toHexString(hashCode());
         }
         out += '{';
         if (isNotBlank(info)) {
-            info = strip(info, "\n");
+            info = info.trim();
             if (info.contains("\n")) {
                 // Indenting info iff contains line feeds.
                 out += "\n\t" + info.replace("\n", "\n\t") + "\n";
