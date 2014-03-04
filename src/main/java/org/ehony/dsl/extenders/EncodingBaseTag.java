@@ -14,8 +14,6 @@ import javax.xml.bind.annotation.adapters.*;
 import java.io.*;
 import java.nio.charset.*;
 
-import static org.ehony.dsl.util.Validate.notNull;
-
 /**
  * Abstract tag-based mixin support of optional <code>encoding</code> attribute.
  * <p>Provides basic serialization mechanisms for arbitrary objects.</p>
@@ -71,7 +69,6 @@ public class EncodingBaseTag<
      * @param charset another charset.
      */
     public void setCharset(Charset charset) {
-        notNull(charset, "Charset expected.");
         this.charset = charset;
     }
 
@@ -160,7 +157,7 @@ public class EncodingBaseTag<
 
     @Override
     protected String getDebugInfo() {
-        return super.getDebugInfo() + "\nencoding = " + getEncoding();
+        return "\nencoding = " + getEncoding() + super.getDebugInfo();
     }
 
     // <editor-fold>

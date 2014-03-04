@@ -36,9 +36,7 @@ public class CarTest
 
     @Test
     public void testGetBean() {
-        BasicTagContext context = new BasicTagContext();
-        context.registerBean("myBean", "Test");
-        car.setContext(context);
+        car.setContext(new BasicTagContext().bean("myBean", "Test"));
         assertEquals(car.getContext().getBean("myBean", String.class), "Test");
     }
 

@@ -10,18 +10,16 @@ import org.ehony.dsl.api.*;
 
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.adapters.*;
 import javax.xml.namespace.QName;
 import java.beans.Introspector;
 import java.util.*;
-
-import static org.ehony.dsl.util.Validate.*;
-import static org.ehony.dsl.util.StringUtils.*;
 
 /**
  * Tag is a mixin with optional identifier assignment and arbitrary attributes.
  * <p>This class <b>must be</b> annotated {@link XmlTransient} to allow use of
  * {@link XmlValue} annotation on members of subclasses of {@link BaseTag}.</p>
- * 
+ *
  * @param <Type> builder type returned by fluent methods.
  * @param <Parent> type of optional parent object.
  */
@@ -30,36 +28,51 @@ public class BaseTag<
         Type extends BaseTag<Type, Parent>,
         Parent extends ContainerTag
         >
-        extends Identifiable<Type>
         implements Tag<Parent>
 {
 
+    private String id;
+    @XmlTransient
     private String name;
     private Parent parent;
     private TagContext context;
     @XmlAnyAttribute
     private Map<QName, Object> attributes = new HashMap<QName, Object>();
-    
+
+    /**
+     * Get the value of the optional identifier property.
+     */
+    @XmlAttribute
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    @XmlID
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * Set the value of the identifier property.
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
+
     /**
      * Get human-readable name of this tag.
-     * <p>If no custom tan name was defined, for <code>class UserActionTag implements Tag {&hellip;}</code>
-     * string <code>userAction</code> would be returned.</p>
-     * @return Tag name in bean identifier flavour. 
+     * @return Tag name in bean identifier flavour.
      */
-    @XmlTransient
     public String getTagName() {
-        if (isBlank(name)) {
+        if (name == null) {
+            // If no custom tag name was defined then camel-cased class name is returned.
             return Introspector.decapitalize(getClass().getSimpleName());
         } else {
             return name;
         }
     }
 
-    public void setTagName(String name) {
-        notBlank(name, "Nonempty tag name expected.");
+    public void setCustomTagName(String name) {
         this.name = name;
     }
-    
+
     /**
      * Callback strategy invoked by JAXB after unmarshalling parent element into tag object.
      * <p>By default sets parent for this tag.</p>
@@ -80,7 +93,9 @@ public class BaseTag<
     @SuppressWarnings("unchecked")
     public Parent setParent(Parent parent) {
         for (Tag tag = parent; tag != null; tag = tag.getParent()) {
-            validState(tag != this, "Detected cyclic dependency.");
+            if (this == tag) {
+                throw new IllegalArgumentException("Detected cyclic dependency.");
+            }
         }
         Parent tag = this.parent;
         if (parent != tag) {
@@ -132,6 +147,19 @@ public class BaseTag<
     // <editor-fold desc="Fluent API">
 
     /**
+     * Set identifier of this node.
+     * <p>By default identifier is not set.</p>
+     *
+     * @param id identifier to assign.
+     * @return Original builder instance.
+     */
+    @SuppressWarnings("unchecked")
+    public Type id(String id) {
+        setId(id);
+        return (Type) this;
+    }
+
+    /**
      * Add an optional attribute with arbitrary qualified name.
      *
      * @param name name of the attribute.
@@ -146,7 +174,7 @@ public class BaseTag<
 
     /**
      * Add an optional attribute with arbitrary namespace and name.
-     * 
+     *
      * @param namespace required namespace.
      * @param name name of the attribute.
      * @param value value to assign to added attribute.
@@ -158,7 +186,7 @@ public class BaseTag<
 
     /**
      * Add an optional attribute in local namespace.
-     * 
+     *
      * @param name local name of the attribute.
      * @param value value to assign to added attribute.
      * @return Original builder instance.
@@ -170,7 +198,7 @@ public class BaseTag<
     /**
      * Element finishing strategy.
      * <p>By default returns parent of this element.</p>
-     * 
+     *
      * @return Original parent builder instance.
      */
     public Parent end() {
@@ -184,6 +212,7 @@ public class BaseTag<
     /**
      * Output debug info about structure of this tag.
      * {@inheritDoc}
+     * @see #getDebugInfo()
      */
     @Override
     public String toString() {
@@ -191,12 +220,13 @@ public class BaseTag<
     }
 
     /**
-     * Line feed separated string of tag-describing parameters.
-     * <p>Result of this method must not include tag name.</p>
+     * String of tag-describing parameters.
+     * <p><b>Recommended implementation:</b> description of each parameter
+     * should start with a line feed character: <code><b>\n</b>key=value</code>.</p>
      * @return String of parameters.
      */
     protected String getDebugInfo() {
-        if (context != null) { 
+        if (context != null) {
             return "\ncontext = " + context;
         } else {
             return "";
@@ -205,26 +235,27 @@ public class BaseTag<
 
     /**
      * Returns string with formatted debug information about this tag and its children.
-     * @param info parameters to display for this tag.
+     * @param info line feed separated parameters to display for this tag.
+     * @see #getDebugInfo()
      */
     protected String toString(String info) {
-        String out = getTagName();
-        if (getId() != null) {
-            out += "#" + getId();
+        StringBuilder out = new StringBuilder(getTagName());
+        String id = getId();
+        if (id != null) {
+            out.append('#').append(id);
         } else {
-            out += "@" + Integer.toHexString(hashCode());
+            out.append('@').append(Integer.toHexString(hashCode()));
         }
-        out += '{';
-        if (isNotBlank(info)) {
-            info = info.trim();
+        out.append('{');
+        if (info != null) {
             if (info.contains("\n")) {
-                // Indenting info iff contains line feeds.
-                out += "\n\t" + info.replace("\n", "\n\t") + "\n";
+                // Indenting info only when it contains line feeds.
+                out.append(info.replace("\n", "\n\t")).append('\n');
             } else {
-                out += info;
+                out.append(info);
             }
         }
-        return out + '}';
+        return out.append('}').toString();
     }
 
     // </editor-fold>

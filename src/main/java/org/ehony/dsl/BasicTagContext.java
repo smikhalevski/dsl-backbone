@@ -11,8 +11,9 @@ import org.ehony.dsl.api.TagContext;
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.*;
 
-import static org.ehony.dsl.util.Validate.*;
-
+/**
+ * {@link HashMap}-backed {@link TagContext}.
+ */
 @XmlTransient
 public class BasicTagContext implements TagContext
 {
@@ -24,10 +25,14 @@ public class BasicTagContext implements TagContext
     @XmlTransient
     @SuppressWarnings("unchecked")
     public <T> T getBean(String id, Class<T> type) {
-        notNull(type, "Looked up bean type expected.");
-        Object bean = getBeans().get(id);
-        isInstanceOf(type, bean, "Bean of " + type + " not found: " + id);
-        return (T) bean;
+        if (beans.containsKey(id)) {
+            Object bean = beans.get(id);
+            if (type != null && !type.isInstance(bean)) {
+                throw new IllegalArgumentException("Bean of " + type + " not found: " + id);
+            }
+            return (T) bean;
+        }
+        throw new IllegalArgumentException("Bean not found: " + id);
     }
 
     /**
@@ -39,23 +44,17 @@ public class BasicTagContext implements TagContext
         return beans;
     }
 
-    public void registerBean(String id, Object bean) {
-        notBlank(id, "Nonempty identifier expected.");
-        notNull(bean, "Bean expected.");
-        beans.put(id, bean);
-    }
-
     // <editor-fold desc="Fluent API">
 
     /**
      * Registers new bean in current context.
-     * 
+     *
      * @param id nonempty identifier.
      * @param bean bean instance.
      * @return Original {@link BasicTagContext} instance.
      */
     public BasicTagContext bean(String id, Object bean) {
-        registerBean(id, bean);
+        beans.put(id, bean);
         return this;
     }
     

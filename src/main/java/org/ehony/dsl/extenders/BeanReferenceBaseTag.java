@@ -12,15 +12,14 @@ import org.ehony.dsl.api.ContainerTag;
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.*;
 
-import static org.ehony.dsl.util.Validate.*;
-
 /**
  * Base for tags that reference beans defined in context.
- * <p>Useful to build proxies for objects defined in execution context.</p>
+ * <p>Useful to build proxies for objects defined in tag context.</p>
  * 
  * @param <Type> builder type returned by fluent methods.
  * @param <Parent> type of optional parent object.
  * @param <Bean> referenced bean type.
+ * @see org.ehony.dsl.api.Tag#setContext(org.ehony.dsl.api.TagContext)
  */
 @XmlTransient
 public class BeanReferenceBaseTag<
@@ -34,16 +33,6 @@ public class BeanReferenceBaseTag<
     private Class<Bean> type;
     private String beanRef;
     private Bean bean;
-
-    /**
-     * Create reference to bean of given type.
-     * <p>Recommended for internal use only.</p>
-     * @param type type of bean.
-     */
-    protected BeanReferenceBaseTag(Class<Bean> type) {
-        notNull(type, "Bean type expected.");
-        setType(type);
-    }
 
     /**
      * Treat object as a bean reference.
@@ -160,7 +149,7 @@ public class BeanReferenceBaseTag<
 
     @Override
     protected String getDebugInfo() {
-        String info = super.getDebugInfo(); 
+        String info = super.getDebugInfo();
         if (beanRef != null) {
             info += "\nref = " + beanRef + "\ntype = " + getRawClass().getName();
         } else {
