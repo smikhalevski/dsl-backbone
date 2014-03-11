@@ -97,9 +97,7 @@ Output (manually formatted):
 Tags have bound instance of `org.ehony.dsl.api.TagContext` and may share same beans in their life cycle.
  
 ```java
-BasicTagContext context = new BasicTagContext();
-context.registerBean("myBean", "Test");
-car.setContext(context);
+car.setContext(new BasicTagContext().bean("myBean", "Test"));
 ```
 
 Now all descendant tags of `car` instance can access bean `myBean` of type `java.lang.String`.
