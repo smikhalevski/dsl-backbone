@@ -129,7 +129,3 @@ The code is available under [MIT licence](LICENSE.txt).
 
 [1]: http://en.wikipedia.org/wiki/Fluent_interface
 [2]: http://www.javaworld.com/article/2077865
-
-![Ehony](ehony.png)
-
-Standalone component of Ehony framework.
