@@ -98,7 +98,9 @@ public class BeanReferenceBaseTag<
      * @param id nonempty bean identifier.
      */
     public final void setBeanRef(String id) {
-        notBlank(id, "Nonempty bean identifier expected.");
+        if (id == null) {
+            throw new IllegalArgumentException("Nonempty bean identifier expected.");
+        }
         this.beanRef = id;
         this.bean = null;
     }
@@ -133,7 +135,9 @@ public class BeanReferenceBaseTag<
     @SuppressWarnings("unchecked")
     public final void setBean(Bean bean) {
         Class<?> type = getRawClass();
-        isInstanceOf(type, bean, "Expected bean of " + type);
+        if (type.isInstance(bean)) {
+            throw new IllegalArgumentException("Expected bean of " + type);
+        }
         this.beanRef = null;
         this.bean = bean;
         this.type = (Class<Bean>) bean.getClass();
@@ -142,7 +146,9 @@ public class BeanReferenceBaseTag<
     @Override
     public void validate() throws Exception {
         super.validate();
-        validState(beanRef != null || bean != null, "Bean reference or instance of " + getRawClass() + " required: " + this);
+        if (beanRef == null && bean == null) {
+            throw new IllegalStateException("Bean reference or instance of " + getRawClass() + " required: " + this);
+        }
     }
 
     // <editor-fold desc="Debug">
@@ -158,5 +164,5 @@ public class BeanReferenceBaseTag<
         return info;
     }
 
-    // <editor-fold>
+    // </editor-fold>
 }

@@ -79,13 +79,6 @@ public class TagChildren<
         }
         int index = list.indexOf(tag);
         if (index != offset) {
-            if (index < 0) {
-                // Omit tag configuration if only rearrangement required.
-                parent.configureChild(tag);
-                if (tag != null) {
-                    tag.setParent(parent);
-                }
-            }
             if (index >= 0) {
                 if (index < offset) {
                     offset--;
@@ -93,6 +86,11 @@ public class TagChildren<
                 list.remove(index);
             }
             list.add(offset, tag);
+            if (index < 0) {
+                // Omit tag configuration if only rearrangement required.
+                parent.configureChild(tag);
+                tag.setParent(parent);
+            }
         }
     }
 
