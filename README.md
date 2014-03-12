@@ -1,4 +1,4 @@
-# Java DSL Backbone
+# Java DSL Backbone [![Build Status](https://travis-ci.org/smikhalevski/dsl-backbone.png?branch=master)](https://travis-ci.org/smikhalevski/dsl-backbone)
 
 Handy approach to create your own Java and XML-based [fluent][1] [domain specific languages][2].
 
@@ -97,9 +97,7 @@ Output (manually formatted):
 Tags have bound instance of `org.ehony.dsl.api.TagContext` and may share same beans in their life cycle.
  
 ```java
-BasicTagContext context = new BasicTagContext();
-context.registerBean("myBean", "Test");
-car.setContext(context);
+car.setContext(new BasicTagContext().bean("myBean", "Test"));
 ```
 
 Now all descendant tags of `car` instance can access bean `myBean` of type `java.lang.String`.
@@ -115,13 +113,19 @@ DSL Backbone is shipped with several extenders which allow speeding up developme
 ## Features
 
 - OSGi compatible.
+- Supported by both Java 6 and 7.
 - Serialization support out of the box.
 - Single dependency.
 - Fully documented.
-- Integration with [Spring](http://spring.io) and other bean containers.
 - Easily add extensive validation.
 - Implement specific tag configuration strategies depending on context.
 - Add arbitrary attributes for your DSL tags and keep them transparently serialized.
+
+## Roadmap
+
+- Integration with [Spring](http://spring.io) and other bean containers.
+- Strategy oriented tag validation.
+- Increase test coverage.
 
 ## License
 
