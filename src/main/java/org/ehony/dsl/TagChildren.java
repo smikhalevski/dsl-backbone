@@ -53,15 +53,22 @@ public class TagChildren<
      * <p>When given tag is already a child of this container it is moved
      * to provided index, if needed.</p>
      * {@inheritDoc}
+     * 
+     * @param offset index of the tag to replace.
+     * @param tag tag to be stored at the specified position.
+     * @return Tag previously at the specified position.
      */
     @Override
-    public Child set(int index, Child tag) {
-        Child oldTag = get(index);
-        if (!tag.equals(oldTag)) {
-            remove(index);
-            add(index, tag);
+    public Child set(int offset, Child tag) {
+        Child before = get(offset);
+        boolean noop = tag == before || (tag != null && tag.equals(before));
+        if (!noop) {
+            // First add new tag to avoid excessive reconfiguration,
+            // then remove following element because it was shifted.
+            add(offset, tag);
+            remove(offset + 1);
         }
-        return oldTag;
+        return before;
     }
 
     /**
@@ -70,6 +77,9 @@ public class TagChildren<
      * tag is already a child of this container it is moved to provided
      * offset, if needed.</p>
      * {@inheritDoc}
+     * 
+     * @param offset index at which the specified tag is to be inserted.
+     * @param tag tag to be inserted.
      */
     @Override
     public void add(int offset, Child tag) {
@@ -86,7 +96,7 @@ public class TagChildren<
                 list.remove(index);
             }
             list.add(offset, tag);
-            if (index < 0) {
+            if (index < 0 && tag != null) {
                 // Omit tag configuration if only rearrangement required.
                 parent.configureChild(tag);
                 tag.setParent(parent);

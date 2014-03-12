@@ -1,4 +1,4 @@
-# Java DSL Backbone
+# Java DSL Backbone [![Build Status](https://travis-ci.org/smikhalevski/dsl-backbone.png?branch=master)](https://travis-ci.org/smikhalevski/dsl-backbone)
 
 Handy approach to create your own Java and XML-based [fluent][1] [domain specific languages][2].
 
@@ -8,7 +8,8 @@ Handy approach to create your own Java and XML-based [fluent][1] [domain specifi
 2. [Serialization](#serialization)
 3. [Tag Context](#tag-context)
 4. [Features](#features)
-5. [License](#license)
+5. [Roadmap] (#roadmap)
+6. [License](#license)
 
 ## Example
 
@@ -113,13 +114,19 @@ DSL Backbone is shipped with several extenders which allow speeding up developme
 ## Features
 
 - OSGi compatible.
+- Supported by both Java 6 and 7.
 - Serialization support out of the box.
 - Single dependency.
 - Fully documented.
-- Integration with [Spring](http://spring.io) and other bean containers.
 - Easily add extensive validation.
 - Implement specific tag configuration strategies depending on context.
 - Add arbitrary attributes for your DSL tags and keep them transparently serialized.
+
+## Roadmap
+
+- Integration with [Spring](http://spring.io) and other bean containers.
+- Strategy oriented tag validation.
+- Increase test coverage.
 
 ## License
 
