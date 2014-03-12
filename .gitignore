@@ -11,13 +11,13 @@ tmp/
 *~.nib
 local.properties
 .classpath
-.settings/
 .loadpath
 .externalToolBuilders/
 *.launch
 .cproject
 .buildpath
 .settings/
+settings.xml
 target/
 
 # System

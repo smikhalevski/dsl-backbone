@@ -1,4 +1,4 @@
-# Java DSL Backbone [![Build Status](https://travis-ci.org/smikhalevski/dsl-backbone.png?branch=master)](https://travis-ci.org/smikhalevski/dsl-backbone)
+# DSL Backbone [![Build Status](https://travis-ci.org/smikhalevski/dsl-backbone.png?branch=master)](https://travis-ci.org/smikhalevski/dsl-backbone)
 
 Handy approach to create your own Java and XML-based [fluent][1] [domain specific languages][2].
 
