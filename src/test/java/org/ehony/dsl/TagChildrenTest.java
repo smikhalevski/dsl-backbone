@@ -43,6 +43,15 @@ public class TagChildrenTest
     }
 
     @Test
+    public void testNoop() {
+        B b = new B(2);
+        children.add(b);
+        // [0, 1, 2]
+        
+        children.set(2, b);
+        assertEquals("[0, 1, 2]", children.toString());
+    }
+    @Test
     public void testReplace() {
         children.add(new B(2));
         // [0, 1, 2]
