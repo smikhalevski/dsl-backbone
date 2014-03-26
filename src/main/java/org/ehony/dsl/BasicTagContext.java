@@ -35,6 +35,11 @@ public class BasicTagContext implements TagContext
         throw new IllegalArgumentException("Bean not found: " + id);
     }
 
+    @Override
+    public ClassLoader getClassLoader() {
+        return getClass().getClassLoader();
+    }
+
     /**
      * Get beans registered in current context.
      * @return Mapping between identifiers and bean instances.

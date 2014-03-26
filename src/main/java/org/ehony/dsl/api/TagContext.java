@@ -17,4 +17,9 @@ public interface TagContext
      * @return Bean instance of requested type.
      */
     <T> T getBean(String id, Class<T> type);
+
+    /**
+     * Get class loader for this context.
+     */
+    ClassLoader getClassLoader();
 }
