@@ -45,6 +45,10 @@ public class Car extends ContainerBaseTag<Car, ContainerTag> {
         if (engine == null) {
             // Car must have an engine.
             engine = appendChild(new Engine());
+            
+            // Engine can also be added in more explicit way:
+            // engine = new Engine();
+            // engine.setParent(this);
         }
         return engine;
     }
@@ -114,7 +118,7 @@ DSL Backbone is shipped with several extenders which allow speeding up developme
 ## Features
 
 - OSGi compatible.
-- Supported by both Java 6 and 7.
+- Supports Java 6 and above.
 - Serialization support out of the box.
 - Single dependency.
 - Fully documented.

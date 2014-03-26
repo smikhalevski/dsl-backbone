@@ -30,7 +30,7 @@ public class BeanReferenceBaseTag<
         extends ContainerBaseTag<Type, Parent>
 {
 
-    private Class<Bean> type;
+    private Class<? extends Bean> type;
     private String beanRef;
     private Bean bean;
 
@@ -59,7 +59,7 @@ public class BeanReferenceBaseTag<
      * @param id bean identifier.
      * @param type type of bean to lookup.
      */
-    public BeanReferenceBaseTag(String id, Class<Bean> type) {
+    public BeanReferenceBaseTag(String id, Class<? extends Bean> type) {
         setBeanRef(id);
         setType(type);
     }
@@ -68,7 +68,7 @@ public class BeanReferenceBaseTag<
      * Get type of exploited bean.
      */
     @XmlTransient
-    public Class<Bean> getType() {
+    public Class<? extends Bean> getType() {
         return type;
     }
 
@@ -77,7 +77,7 @@ public class BeanReferenceBaseTag<
      * @param type type of bean to lookup. If <code>null</code> is provided
      *             then bean type checking would not be performed.
      */
-    public final void setType(Class<Bean> type) {
+    public final void setType(Class<? extends Bean> type) {
         this.type = type;
     }
 

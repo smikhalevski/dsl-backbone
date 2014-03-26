@@ -38,6 +38,14 @@ public class TagChildren<
         this.parent = parent;
     }
 
+    /**
+     * Get container tag which holds these children.
+     * @return Parent tag object.
+     */
+    public Parent getParent() {
+        return parent;
+    }
+
     @Override
     public Child get(int index) {
         return list.get(index);

@@ -197,12 +197,23 @@ public class BaseTag<
 
     /**
      * Element finishing strategy.
-     * <p>By default returns parent of this element.</p>
+     * <p>By default returns parent of this element and tries to implicitly adopt returned type.</p>
      *
      * @return Original parent builder instance.
      */
-    public Parent end() {
-        return getParent();
+    @SuppressWarnings("unchecked")
+    public <T extends Parent> T end() {
+        return (T) getParent();
+    }
+
+    /**
+     * Element finishing strategy which explicitly casts parent to given type.
+     * @param type type instance to cast to.
+     * @return Original parent builder instance.
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends Parent> T end(Class<T> type) {
+        return (T) end();
     }
 
     // </editor-fold>

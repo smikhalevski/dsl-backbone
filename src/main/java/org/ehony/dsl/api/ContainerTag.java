@@ -24,12 +24,12 @@ public interface ContainerTag<
      * to container structure in order to preserve consistency of parent-child relations.</p>
      * @return List of container children.
      */
-    List<Tag<Type>> getChildren();
+    List<Tag<? extends Type>> getChildren();
 
     /**
      * Custom configuration strategy for children of this tag.
      * <p><b>Recommended implementation:</b> executed when child tag is first added to this container.</p>
      * @param tag tag to configure.
      */
-    void configureChild(Tag<Type> tag);
+    void configureChild(Tag<? extends Type> tag);
 }

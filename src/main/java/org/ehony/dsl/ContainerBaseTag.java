@@ -25,8 +25,9 @@ public class ContainerBaseTag<
 
     @Override
     @XmlTransient
-    public List<Tag<Type>> getChildren() {
-        return children;
+    @SuppressWarnings("unchecked")
+    public List<Tag<? extends Type>> getChildren() {
+        return (List) children;
     }
 
     /**
@@ -34,13 +35,14 @@ public class ContainerBaseTag<
      * <p>If tag is already a child of container it is moved to the end of children list.</p>
      * @param tag tag to insert.
      */
-    public <T extends Tag<Type>> T appendChild(T tag) {
-        children.add(tag);
+    @SuppressWarnings("unchecked")
+    public <T extends Tag<? extends Type>> T appendChild(T tag) {
+        children.add((Tag<Type>) tag); // The same as tag.setParent(this)
         return tag;
     }
 
     @Override
-    public void configureChild(Tag<Type> tag) {
+    public void configureChild(Tag<? extends Type> tag) {
         // noop
     }
 
