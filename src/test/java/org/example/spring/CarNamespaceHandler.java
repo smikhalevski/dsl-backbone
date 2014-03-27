@@ -1,20 +1,25 @@
+/*
+ * ┌──┐
+ * │  │
+ * │Eh│ony
+ * └──┘
+ */
 package org.example.spring;
 
-import org.ehony.dsl.spring.*;
-import org.example.*;
-import org.springframework.beans.factory.xml.*;
-
-import javax.xml.bind.annotation.*;
+import org.ehony.dsl.spring.TagBeanDefinitionParser;
+import org.example.Car;
+import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
 /**
- * See test/resources/META-INF/spring.handlers for mapping details.
+ * For Spring custom mapping details refer to
+ * <a href="http://docs.spring.io/spring/docs/3.2.4.RELEASE/spring-framework-reference/html/extensible-xml.html#extensible-xml-custom-nested">Spring documentation</a>
+ * and <tt>test/resources/META-INF/spring.*</tt> files.
  */
-@XmlTransient
 public class CarNamespaceHandler extends NamespaceHandlerSupport
 {
 
     @Override
     public void init() {
-        registerBeanDefinitionParser("car", new TagBeanDefinitionParser(Car.class));
+        registerBeanDefinitionParser("super-car", new TagBeanDefinitionParser(Car.class));
     }
 }

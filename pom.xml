@@ -131,34 +131,34 @@
                     </execution>
                 </executions>
             </plugin>
-            
-            <!-- Test -->
             <plugin>
-                <groupId>com.sun.tools.jxc.maven2</groupId>
-                <artifactId>maven-jaxb-schemagen-plugin</artifactId>
-                <version>1.2</version>
+                <!--
+                  Generates XML schema for classes from org.example package.
+                  To have deserialization jaxb.index or ObjectFactory.class are required in org.example package.
+                  -->
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <version>1.5</version>
                 <executions>
                     <execution>
-                        <phase>generate-test-resources</phase>
                         <goals>
-                            <goal>generate</goal>
+                            <goal>testSchemagen</goal>
                         </goals>
+                        <phase>generate-test-resources</phase>
+                        <configuration>
+                            <includes>
+                                <include>org/example/*.java</include>
+                            </includes>
+                            <outputDirectory>${project.build.testOutputDirectory}</outputDirectory>
+                            <transformSchemas>
+                                <transformSchema>
+                                    <uri>http://example.org/</uri>
+                                    <toFile>car.xsd</toFile>
+                                </transformSchema>
+                            </transformSchemas>
+                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <srcdir>${project.build.testSourceDirectory}</srcdir>
-                    <destdir>${project.build.testOutputDirectory}</destdir>
-                    <includes>
-                        <include>org/example/*.java</include>
-                    </includes>
-                    <schemas>
-                        <schema>
-                            <namespace>http://example.org/</namespace>
-                            <file>car.xsd</file>
-                        </schema>
-                    </schemas>
-                    <verbose>true</verbose>
-                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -194,7 +194,7 @@
             <version>3.2.4.RELEASE</version>
             <optional>true</optional>
         </dependency>
-        
+
         <!-- Test -->
         <dependency>
             <groupId>junit</groupId>

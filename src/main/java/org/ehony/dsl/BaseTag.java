@@ -8,11 +8,15 @@ package org.ehony.dsl;
 
 import org.ehony.dsl.api.*;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.JAXBIntrospector;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.*;
 import javax.xml.namespace.QName;
 import java.beans.Introspector;
+import java.lang.annotation.*;
 import java.util.*;
 
 /**
@@ -58,11 +62,14 @@ public class BaseTag<
 
     /**
      * Get human-readable name of this tag.
+     * <p>Returned name <b>does not</b> introspect JAXB annotations and rely only on class name and custom name.
+     * If no custom tag name was defined then camel-cased class name is returned.</p>
+     * 
      * @return Tag name in bean identifier flavour.
+     * @see #setCustomTagName(String)
      */
     public String getTagName() {
         if (name == null) {
-            // If no custom tag name was defined then camel-cased class name is returned.
             return Introspector.decapitalize(getClass().getSimpleName());
         } else {
             return name;
@@ -236,6 +243,7 @@ public class BaseTag<
      * should start with a line feed character: <code><b>\n</b>key=value</code>.</p>
      * @return String of parameters.
      */
+    @XmlTransient
     protected String getDebugInfo() {
         if (context != null) {
             return "\ncontext = " + context;

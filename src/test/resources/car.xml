@@ -5,6 +5,6 @@
   │Eh│ony
   └──┘
   -->
-<car xmlns="http://example.org/" id="my-car" brand="Porsche">
+<super-car xmlns="http://example.org/" id="my-car" brand="Porsche">
     <engine id="M28.01" gears="5"/>
-</car>
+</super-car>

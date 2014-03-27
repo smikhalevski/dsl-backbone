@@ -11,7 +11,7 @@ import org.ehony.dsl.api.ContainerTag;
 
 import javax.xml.bind.annotation.*;
 
-@XmlRootElement
+@XmlRootElement(name = "super-car")
 public class Car extends ContainerBaseTag<Car, ContainerTag>
 {
 

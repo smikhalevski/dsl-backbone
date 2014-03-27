@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ┌──┐
+  │  │
+  │Eh│ony
+  └──┘
+  -->
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="
             http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
             http://example.org/ http://example.org/car.xsd">
 
-    <car xmlns="http://example.org/" id="my-car" brand="Porsche">
+    <super-car xmlns="http://example.org/" id="my-car" brand="Porsche">
         <engine id="M28.01" gears="5"/>
-    </car>
+    </super-car>
 
 </beans>

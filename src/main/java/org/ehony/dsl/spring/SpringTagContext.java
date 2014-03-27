@@ -1,21 +1,23 @@
+/*
+ * ┌──┐
+ * │  │
+ * │Eh│ony
+ * └──┘
+ */
 package org.ehony.dsl.spring;
 
-import org.ehony.dsl.api.*;
-import org.springframework.context.*;
+import org.ehony.dsl.api.TagContext;
+import org.springframework.context.ApplicationContext;
 
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlTransient;
 
-/**
- * 
- */
 @XmlTransient
-public class SpringTagContext implements TagContext, ApplicationContextAware
+public class SpringTagContext implements TagContext
 {
 
     private ApplicationContext context;
-    
-    @Override
-    public void setApplicationContext(ApplicationContext context) {
+
+    public SpringTagContext(ApplicationContext context) {
         this.context = context;
     }
 
