@@ -37,7 +37,7 @@ public class ContainerBaseTag<
      */
     @SuppressWarnings("unchecked")
     public <T extends Tag<? extends Type>> T appendChild(T tag) {
-        children.add((Tag<Type>) tag); // The same as tag.setParent(this)
+        children.add((Tag<Type>) tag); // The same as tag.setParentTag(this)
         return tag;
     }
 

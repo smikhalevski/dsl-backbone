@@ -8,15 +8,11 @@ package org.ehony.dsl;
 
 import org.ehony.dsl.api.*;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.JAXBIntrospector;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.*;
 import javax.xml.namespace.QName;
 import java.beans.Introspector;
-import java.lang.annotation.*;
 import java.util.*;
 
 /**
@@ -87,19 +83,19 @@ public class BaseTag<
      */
     @SuppressWarnings("unchecked")
     public void afterUnmarshal(Unmarshaller target, Object tag) {
-        setParent((Parent) tag);
+        setParentTag((Parent) tag);
     }
 
     @Override
     @XmlTransient
-    public Parent getParent() {
+    public Parent getParentTag() {
         return parent;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public Parent setParent(Parent parent) {
-        for (Tag tag = parent; tag != null; tag = tag.getParent()) {
+    public Parent setParentTag(Parent parent) {
+        for (Tag tag = parent; tag != null; tag = tag.getParentTag()) {
             if (this == tag) {
                 throw new IllegalArgumentException("Detected cyclic dependency.");
             }
@@ -210,7 +206,7 @@ public class BaseTag<
      */
     @SuppressWarnings("unchecked")
     public <T extends Parent> T end() {
-        return (T) getParent();
+        return (T) getParentTag();
     }
 
     /**

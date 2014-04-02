@@ -107,7 +107,7 @@ public class TagChildren<
             if (index < 0 && tag != null) {
                 // Omit tag configuration if only rearrangement required.
                 parent.configureChild(tag);
-                tag.setParent(parent);
+                tag.setParentTag(parent);
             }
         }
     }
@@ -121,7 +121,7 @@ public class TagChildren<
     public Child remove(int index) {
         Child tag = list.remove(index);
         if (tag != null) {
-            tag.setParent(null);
+            tag.setParentTag(null);
         }
         return tag;
     }

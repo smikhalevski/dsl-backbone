@@ -26,7 +26,7 @@ public class SpringIntegrationTest
 
         Tag engine = car.getChildren().get(0);
         assertEquals("Spring proxy failed to find bean.", engine.getContext().getBean("my-car", Car.class), car);
-        assertNotNull("Failed to build parent-child relation.", engine.getParent());
+        assertNotNull("Failed to build parent-child relation.", engine.getParentTag());
         assertEquals(engine.toString(), "engine#M28.01{}");
     }
 }

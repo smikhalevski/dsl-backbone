@@ -18,7 +18,7 @@ public interface Tag<Parent extends ContainerTag>
      * Get parent container tag.
      * @return Parent tag object.
      */
-    Parent getParent();
+    Parent getParentTag();
 
     /**
      * Set parent container for this tag.
@@ -29,7 +29,7 @@ public interface Tag<Parent extends ContainerTag>
      * @return Replaced parent container, equals to <code>parent</code> argument if not changes were made.
      * @exception IllegalArgumentException cyclic dependency in tag tree.
      */
-    Parent setParent(Parent parent);
+    Parent setParentTag(Parent parent);
 
     /**
      * Get tag context.
