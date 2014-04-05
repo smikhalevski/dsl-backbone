@@ -77,8 +77,10 @@ In order to hold child tags, `Car` tag must implement `org.ehony.dsl.ContainerTa
 ```java
 package org.example;
 // Imports omitted.
+@XmlType(name = "car")
 public class Car extends ContainerBaseTag<Car, ContainerTag> {
 
+    @XmlElement
     public Engine engine;
 
     public Engine engine() {
@@ -159,6 +161,8 @@ public class CarNamespaceHandler extends NamespaceHandlerSupport {
 
 `TagBeanDefinitionParser` incapsulates all means of bean deserialisation and instantination.
 
+To create custom namespace handler, please refer to [Spring documentation](http://docs.spring.io/spring/docs/2.5.5/reference/extensible-xml.html#extensible-xml-namespacehandler).
+
 #### Generating XML Schema
 
 To generate XML schema automatically from your classes I recommend to use `org.codehaus.mojo:jaxb2-maven-plugin` Maven plugin. Note that schema would not contain any references to `BaseTag` or `ContainerBaseTag` because they are marked as `@XmlTransient` to allow usage of `@XmlValue` annotation on their subclasses.
@@ -191,8 +195,6 @@ To generate XML schema automatically from your classes I recommend to use `org.c
 ```
 
 To allow `Car` tag deserialization from XML you should create `org/example/jaxb.index` with a single word `Car` or create a custom `ObjectFactory` class.
-
-To create custom namespace handler, please refer to [Spring documentation](http://docs.spring.io/spring/docs/2.5.5/reference/extensible-xml.html#extensible-xml-namespacehandler).
 
 #### Registering Handler and XML Schema
 
