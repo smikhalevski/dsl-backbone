@@ -239,7 +239,7 @@ DSL Backbone is shipped with several extenders which allow speeding up developme
 - Supports Java 6 and above.
 - Integration with [Spring](http://spring.io).
 - Serialization support out of the box.
-- Single dependency (org.springframework:spring-context is optional).
+- Single dependency.
 - Fully documented.
 - Allows to add validation and context-based tag auto-configuration.
 - Add arbitrary attributes for your DSL tags and keep them transparently serialized.
