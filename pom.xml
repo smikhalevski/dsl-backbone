@@ -20,7 +20,7 @@
     <groupId>org.ehony</groupId>
     <artifactId>dsl-backbone</artifactId>
     <packaging>bundle</packaging>
-    <version>1.1</version>
+    <version>1.2-SNAPSHOT</version>
 
     <name>DSL Backbone</name>
     <description>Fluent domain specific language framework</description>
