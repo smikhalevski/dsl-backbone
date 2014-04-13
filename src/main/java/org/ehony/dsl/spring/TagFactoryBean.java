@@ -13,6 +13,9 @@ import org.w3c.dom.Element;
 
 import javax.xml.bind.JAXBContext;
 
+/**
+ * Bean that constructs {@link Tag} instance from provided XML element.
+ */
 public class TagFactoryBean
         extends AbstractFactoryBean<Tag>
         implements ApplicationContextAware
@@ -22,13 +25,19 @@ public class TagFactoryBean
     private Class<Tag> type;
     private String classpath;
     private ApplicationContext context;
+    private Tag tag;
 
-    public void setElement(Element node) {
+    /**
+     * Create new factory bean that can construct bean of given type
+     * via parsing node with JAXB configured with provided classpath.
+     * @param node element to parse.
+     * @param type expected object type, can be empty.
+     * @param classpath classpath for JAXB to load.
+     */
+    public TagFactoryBean(Element node, Class<Tag> type, String classpath) {
         this.node = node;
-    }
-
-    public void setObjectType(Class<Tag> type) {
         this.type = type;
+        this.classpath = classpath;
     }
 
     @Override
@@ -36,19 +45,17 @@ public class TagFactoryBean
         this.context = context;
     }
 
-    public void setClasspath(String classpath) {
-        this.classpath = classpath;
-    }
-
     @Override
-    public Class<?> getObjectType() {
+    public Class<Tag> getObjectType() {
         return type;
     }
 
     @Override
     protected Tag createInstance() throws Exception {
-        Tag tag = (Tag) JAXBContext.newInstance(classpath).createBinder().unmarshal(node);
-        tag.setContext(new SpringTagContext(context));
+        if (tag == null) {
+            tag = (Tag) JAXBContext.newInstance(classpath).createBinder().unmarshal(node);
+            tag.setContext(new SpringTagContext(context));
+        }
         return tag;
     }
 }

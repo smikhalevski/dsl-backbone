@@ -11,6 +11,9 @@ import org.springframework.context.ApplicationContext;
 
 import javax.xml.bind.annotation.XmlTransient;
 
+/**
+ * Proxy to Spring context.
+ */
 @XmlTransient
 public class SpringTagContext implements TagContext
 {
@@ -21,6 +24,10 @@ public class SpringTagContext implements TagContext
         this.context = context;
     }
 
+    /**
+     * Spring context that holds configuration of an application.
+     * <p>Originally assigned to root tag created in returned context.</p>
+     */
     public ApplicationContext getApplicationContext() {
         return context;
     }
