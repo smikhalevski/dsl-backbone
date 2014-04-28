@@ -23,7 +23,7 @@
     <version>1.2-SNAPSHOT</version>
 
     <name>DSL Backbone</name>
-    <description>Fluent domain specific language framework</description>
+    <description>Handy approach to create Java and XML-based fluent domain specific languages.</description>
     <url>https://github.com/smikhalevski/dsl-backbone</url>
     <licenses>
         <license>
