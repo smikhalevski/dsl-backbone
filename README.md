@@ -134,6 +134,7 @@ Several steps are required to add support of custom DSL tags in Spring XML conte
 2. Create Spring namespace handler for DSL root tags.
 3. [Create XML schema](#generating-xml-schema) describing your DSL tags.
 4. Add `spring.handlers` and `spring.schemas` to `META-INF` folder to register namespace handler and created shema.
+5. Explicitly declare `org.springframework:spring-context` dependency to `pom.xml`.
 
 After all these steps you can retrieve `Car` instance from Spring context:
 ```java
@@ -259,8 +260,6 @@ Apache Maven dependency:
     <version>1.1</version>
 </dependency>
 ```
-
-For Spring context support you should explicitly add `org.springframework:spring-context` dependency. Currently DSL Backbone depends on Spring 3.2.4.RELEASE but works fine with versions starting above 2.5.
 
 ## License
 
