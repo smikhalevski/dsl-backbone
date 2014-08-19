@@ -248,6 +248,7 @@ DSL Backbone is shipped with several extenders which allow speeding up developme
 
 ## Roadmap
 
+- Add Spring initialization support for beans, ex. when bean extends `org.springframework.beans.factory.InitializingBean`.
 - Strategy oriented tag validation.
 - Increase test coverage.
 
