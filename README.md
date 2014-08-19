@@ -1,6 +1,6 @@
 # DSL Backbone [![Build Status](https://travis-ci.org/smikhalevski/dsl-backbone.png?branch=master)](https://travis-ci.org/smikhalevski/dsl-backbone)
 
-Handy approach to create your own Java and XML-based [fluent][1] [domain specific languages][2].
+Handy approach to create your own [fluent][1] [domain specific languages][2] with Java, JSON and XML.
 
 ## Contents
 
@@ -15,6 +15,7 @@ Handy approach to create your own Java and XML-based [fluent][1] [domain specifi
     5. [Extentions](#extentions)
 2. [Features](#features) 
 3. [Roadmap](#roadmap)
+    1. [To Do](#to-do)
 4. [Dependencies](#dependencies)
 5. [License](#license)
 
@@ -249,6 +250,11 @@ DSL Backbone is shipped with several extenders which allow speeding up developme
 
 - Strategy oriented tag validation.
 - Increase test coverage.
+
+### To Do
+
+- Add documentation for `org.ehony.dsl.TagParentListener`.
+- Implement parent reference for `Tag` using Jackson.
 
 ## Dependencies
 

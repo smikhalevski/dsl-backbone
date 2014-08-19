@@ -5,6 +5,6 @@
   │Eh│ony
   └──┘
   -->
-<super-car xmlns="http://example.org/" id="my-car" brand="Porsche">
-    <engine id="M28.01" gears="5"/>
+<super-car xmlns="http://example.org/" brand="Porsche" id="my-car">
+    <engine xmlns:ehony="http://ehony.org/" gears="5" id="M28.01" petrol="E95" ehony:maintenance-year="2014"/>
 </super-car>

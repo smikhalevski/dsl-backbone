@@ -6,9 +6,15 @@
  */
 package org.ehony.dsl;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
+import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 import org.apache.commons.io.IOUtils;
 import org.example.Car;
 import org.junit.*;
+import org.skyscreamer.jsonassert.JSONAssert;
 
 import javax.xml.bind.*;
 import java.io.*;
@@ -20,7 +26,6 @@ public class CarTest
 {
 
     private Car car;
-    private InputStream in;
 
     @Before
     public void before() throws Exception {
@@ -30,8 +35,9 @@ public class CarTest
                 .engine()
                     .id("M28.01")
                     .gears(5)
-                    .end();
-        in = Car.class.getResourceAsStream("/car.xml");
+                    .attribute("http://ehony.org/", "maintenance-year", "2014")
+                    .attribute("petrol", "E95")
+                .end();
     }
 
     @Test
@@ -41,20 +47,47 @@ public class CarTest
     }
 
     @Test
-    public void testToXml() throws Exception {
-        Marshaller m = JAXBContext.newInstance(Car.class).createMarshaller();
-        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+    public void testJaxbToXml() throws Exception {
+        Marshaller mapper = JAXBContext.newInstance(Car.class).createMarshaller();
+        mapper.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        m.marshal(car, out);
+        mapper.marshal(car, out);
 
-        String xml = IOUtils.toString(in);
-        assertXMLEqual(xml, out.toString());
+        String expected = IOUtils.toString(Car.class.getResourceAsStream("/car.xml"));
+        assertXMLEqual(expected, out.toString());
     }
 
     @Test
-    public void testFromXml() throws Exception {
-        Unmarshaller m = JAXBContext.newInstance(Car.class).createUnmarshaller();
-        assertEquals(car.toString(), m.unmarshal(in).toString());
+    public void testJaxbFromXml() throws Exception {
+        Unmarshaller mapper = JAXBContext.newInstance(Car.class).createUnmarshaller();
+        mapper.setListener(new TagParentListener());
+        String observed = mapper.unmarshal(Car.class.getResourceAsStream("/car.xml")).toString();
+        assertEquals(car.toString(), observed);
+    }
+
+    private ObjectMapper createJaxbObjectMapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JaxbAnnotationModule());
+        mapper.setAnnotationIntrospector(new JaxbAnnotationIntrospector(TypeFactory.defaultInstance()));
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        return mapper;
+    }
+
+    @Test
+    public void testJacksonToJson() throws Exception {
+        String expected = IOUtils.toString(Car.class.getResourceAsStream("/car.json"));
+        String observed = createJaxbObjectMapper().writeValueAsString(car);
+        JSONAssert.assertEquals(expected, observed, false);
+    }
+
+    @Test
+    @Ignore("Jackson does not support callbacks on after mapping")
+    public void testJacksonFromJson() throws Exception {
+        ObjectMapper mapper = createJaxbObjectMapper();
+
+        Car observed = mapper.readValue(Car.class.getResourceAsStream("/car.json"), Car.class);
+        // TODO How to implement parent reference for Tag using Jackson?
+        assertEquals(car.toString(), observed.toString());
     }
 }

@@ -20,6 +20,7 @@ public class ContainerBaseTag<
         implements ContainerTag<Type, Parent>
 {
 
+    @XmlTransient
     @SuppressWarnings("unchecked")
     private List<Tag<Type>> children = new TagChildren<Type, Tag<Type>>((Type) this);
 

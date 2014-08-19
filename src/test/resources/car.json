@@ -1,0 +1,12 @@
+{
+    "id": "my-car",
+    "brand": "Porsche",
+    "engine": {
+        "id": "M28.01",
+        "gears": 5,
+        "attributes": {
+            "petrol": "E95",
+            "{http://ehony.org/}maintenance-year": "2014"
+        }
+    }
+}

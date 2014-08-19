@@ -36,6 +36,7 @@ public class BasicTagContext implements TagContext
     }
 
     @Override
+    @XmlTransient
     public ClassLoader getClassLoader() {
         return getClass().getClassLoader();
     }

@@ -8,7 +8,6 @@ package org.ehony.dsl;
 
 import org.ehony.dsl.api.*;
 
-import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.*;
 import javax.xml.namespace.QName;
@@ -31,13 +30,16 @@ public class BaseTag<
         implements Tag<Parent>
 {
 
+    @XmlTransient
     private String id;
     @XmlTransient
     private String name;
+    @XmlTransient
     private Parent parent;
+    @XmlTransient
     private TagContext context;
     @XmlAnyAttribute
-    private Map<QName, Object> attributes = new HashMap<QName, Object>();
+    private Map<QName, Object> attributes;
 
     /**
      * Get the value of the optional identifier property.
@@ -64,6 +66,7 @@ public class BaseTag<
      * @return Tag name in bean identifier flavour.
      * @see #setCustomTagName(String)
      */
+    @XmlTransient
     public String getTagName() {
         if (name == null) {
             return Introspector.decapitalize(getClass().getSimpleName());
@@ -74,16 +77,6 @@ public class BaseTag<
 
     public void setCustomTagName(String name) {
         this.name = name;
-    }
-
-    /**
-     * Callback strategy invoked by JAXB after unmarshalling parent element into tag object.
-     * <p>By default sets parent for this tag.</p>
-     * <p><font color="red">Recommended for internal use only.</font></p>
-     */
-    @SuppressWarnings("unchecked")
-    public void afterUnmarshal(Unmarshaller target, Object tag) {
-        setParentTag((Parent) tag);
     }
 
     @Override
@@ -139,7 +132,11 @@ public class BaseTag<
     /**
      * Get attributes which were not explicitly defined by schema.
      */
+    @XmlTransient
     public Map<QName, Object> getOtherAttributes() {
+        if (attributes == null) {
+            attributes = new HashMap<QName, Object>();
+        }
         return attributes;
     }
 
@@ -171,7 +168,7 @@ public class BaseTag<
      */
     @SuppressWarnings("unchecked")
     public Type attribute(QName name, Object value) {
-        attributes.put(name, value);
+        getOtherAttributes().put(name, value);
         return (Type) this;
     }
 
