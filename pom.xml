@@ -20,7 +20,7 @@
     <groupId>org.ehony</groupId>
     <artifactId>dsl-backbone</artifactId>
     <packaging>bundle</packaging>
-    <version>1.2-SNAPSHOT</version>
+    <version>1.2</version>
 
     <name>DSL Backbone</name>
     <description>Handy approach to create Java and XML-based fluent domain specific languages.</description>
