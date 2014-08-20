@@ -45,7 +45,7 @@ public class TagBeanDefinitionParser extends AbstractBeanDefinitionParser
      */
     public TagBeanDefinitionParser(Class<? extends Tag> type, String classpath) {
         if (classpath == null) {
-            throw new IllegalArgumentException("Cannot process empty classpath.");
+            throw new IllegalArgumentException("Empty classpath.");
         }
         this.type = type;
         this.classpath = classpath;

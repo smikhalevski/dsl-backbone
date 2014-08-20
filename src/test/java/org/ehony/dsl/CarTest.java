@@ -17,6 +17,8 @@ import org.junit.*;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 import javax.xml.bind.*;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 
 import static org.custommonkey.xmlunit.XMLAssert.*;
@@ -59,11 +61,22 @@ public class CarTest
     }
 
     @Test
-    public void testJaxbFromXml() throws Exception {
+    public void testJaxbFromXmlByObject() throws Exception {
         Unmarshaller mapper = JAXBContext.newInstance(Car.class).createUnmarshaller();
         mapper.setListener(new TagParentListener());
-        String observed = mapper.unmarshal(Car.class.getResourceAsStream("/car.xml")).toString();
-        assertEquals(car.toString(), observed);
+
+        Object observed = mapper.unmarshal(Car.class.getResourceAsStream("/car.xml"));
+        assertEquals(car.toString(), observed.toString());
+    }
+
+    @Test
+    public void testJaxbFromXmlBySource() throws Exception {
+        Unmarshaller mapper = JAXBContext.newInstance(Car.class).createUnmarshaller();
+        mapper.setListener(new TagParentListener());
+
+        Source source = new StreamSource(Car.class.getResourceAsStream("/car.xml"));
+        Car observed = mapper.unmarshal(source, Car.class).getValue();
+        assertEquals(car.toString(), observed.toString());
     }
 
     private ObjectMapper createJaxbObjectMapper() {

@@ -12,6 +12,7 @@ import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.*;
 import javax.xml.namespace.QName;
 import java.beans.Introspector;
+import java.lang.annotation.Annotation;
 import java.util.*;
 
 /**
@@ -38,7 +39,6 @@ public class BaseTag<
     private Parent parent;
     @XmlTransient
     private TagContext context;
-    @XmlAnyAttribute
     private Map<QName, Object> attributes;
 
     /**
@@ -69,10 +69,31 @@ public class BaseTag<
     @XmlTransient
     public String getTagName() {
         if (name == null) {
-            return Introspector.decapitalize(getClass().getSimpleName());
+            return getClassTagName(getClass());
         } else {
             return name;
         }
+    }
+
+    /**
+     * Extracts name of the tag from JAXB annotations specified for given class.
+     * @param type class to introspect.
+     * @return Effective XML name of the given class.
+     */
+    public static String getClassTagName(Class<?> type) {
+        String name = Introspector.decapitalize(type.getSimpleName());
+        for (Annotation a : type.getAnnotations()) {
+            if (a instanceof XmlRootElement) {
+                name = ((XmlRootElement) a).name();
+            }
+            if (a instanceof XmlElement) {
+                name = ((XmlElement) a).name();
+            }
+            if (a instanceof XmlType) {
+                name = ((XmlType) a).name();
+            }
+        }
+        return name;
     }
 
     public void setCustomTagName(String name) {
@@ -132,8 +153,8 @@ public class BaseTag<
     /**
      * Get attributes which were not explicitly defined by schema.
      */
-    @XmlTransient
-    public Map<QName, Object> getOtherAttributes() {
+    @XmlAnyAttribute
+    public Map<QName, Object> getAttributes() {
         if (attributes == null) {
             attributes = new HashMap<QName, Object>();
         }
@@ -168,7 +189,7 @@ public class BaseTag<
      */
     @SuppressWarnings("unchecked")
     public Type attribute(QName name, Object value) {
-        getOtherAttributes().put(name, value);
+        getAttributes().put(name, value);
         return (Type) this;
     }
 

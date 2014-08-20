@@ -101,7 +101,7 @@ public class EncodingBaseTag<
             } finally {
                 try {
                     out.close();
-                } catch (Exception ex) {
+                } catch (Throwable t) {
                     // Quiet
                 }
             }
