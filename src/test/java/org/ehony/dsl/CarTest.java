@@ -9,6 +9,7 @@ package org.ehony.dsl;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.fasterxml.jackson.datatype.jsr353.JSR353Module;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 import org.apache.commons.io.IOUtils;
@@ -81,14 +82,17 @@ public class CarTest
 
     private ObjectMapper createJaxbObjectMapper() {
         ObjectMapper mapper = new ObjectMapper();
+
+        // Jackson JAXB support injection.
         mapper.registerModule(new JaxbAnnotationModule());
         mapper.setAnnotationIntrospector(new JaxbAnnotationIntrospector(TypeFactory.defaultInstance()));
+
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         return mapper;
     }
 
     @Test
-    public void testJacksonToJson() throws Exception {
+    public void testJacksonJaxbToJson() throws Exception {
         String expected = IOUtils.toString(Car.class.getResourceAsStream("/car.json"));
         String observed = createJaxbObjectMapper().writeValueAsString(car);
         JSONAssert.assertEquals(expected, observed, false);
@@ -96,11 +100,25 @@ public class CarTest
 
     @Test
     @Ignore("Jackson does not support callbacks on after mapping")
-    public void testJacksonFromJson() throws Exception {
+    public void testJacksonJaxbFromJson() throws Exception {
         ObjectMapper mapper = createJaxbObjectMapper();
 
         Car observed = mapper.readValue(Car.class.getResourceAsStream("/car.json"), Car.class);
         // TODO How to implement parent reference for Tag using Jackson?
         assertEquals(car.toString(), observed.toString());
+    }
+
+    private ObjectMapper createJsr353ObjectMapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JSR353Module());
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        return mapper;
+    }
+
+    @Test
+    public void testJacksonJsr353ToJson() throws Exception {
+        String expected = IOUtils.toString(Car.class.getResourceAsStream("/car.json"));
+        String observed = createJsr353ObjectMapper().writeValueAsString(car);
+        JSONAssert.assertEquals(expected, observed, false);
     }
 }

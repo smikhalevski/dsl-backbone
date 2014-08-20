@@ -39,6 +39,7 @@ public class BaseTag<
     private Parent parent;
     @XmlTransient
     private TagContext context;
+    @XmlTransient
     private Map<QName, Object> attributes;
 
     /**
