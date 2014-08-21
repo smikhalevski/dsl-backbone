@@ -29,18 +29,6 @@ public interface ContainerTag<
     List<Tag<? extends Type>> getChildren();
 
     /**
-     * Append another child tag to container.
-     * <p>If tag is already a child of container it should moved to the end of children list.</p>
-     * <p>This should do the same as <code>tag.setParentTag(this)</code> to make operation reversible.</p>
-     *
-     * @param tag tag to insert.
-     */
-    default <T extends Tag<? extends Type>> T appendChild(T tag) {
-        getChildren().add(tag);
-        return tag;
-    }
-
-    /**
      * Custom configuration strategy for children of this tag.
      * <p>Expected to be executed once when child tag is <b>first time</b> added to this container.</p>
      *
@@ -59,4 +47,20 @@ public interface ContainerTag<
             tag.validate();
         }
     }
+
+    // <editor-fold desc="Default Fluent API">
+
+    /**
+     * Append another child tag to container.
+     * <p>If tag is already a child of container it should moved to the end of children list.</p>
+     * <p>This should do the same as <code>tag.setParentTag(this)</code> to make operation reversible.</p>
+     *
+     * @param tag tag to insert.
+     */
+    default <T extends Tag<? extends Type>> T appendChild(T tag) {
+        getChildren().add(tag);
+        return tag;
+    }
+
+    // </editor-fold>
 }
