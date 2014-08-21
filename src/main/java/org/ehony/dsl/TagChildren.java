@@ -28,7 +28,7 @@ public class TagChildren<
 {
 
     private Parent parent;
-    private List<Child> list = new ArrayList<Child>();
+    private List<Child> list = new ArrayList<>();
 
     /**
      * Creates new list of container children.

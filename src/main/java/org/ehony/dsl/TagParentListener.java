@@ -10,22 +10,18 @@ import javax.xml.bind.Unmarshaller;
  */
 public class TagParentListener extends Unmarshaller.Listener {
 
-    private <T> T castToObject(Object from, Class<T> type) {
-        if (from == null) {
-            return null;
+    private <T extends Tag> T toTag(Object tag, Class<T> type) {
+        if (tag instanceof JAXBElement) {
+            tag = ((JAXBElement) tag).getValue();
         }
-        if (type.isInstance(from)) {
-            return type.cast(from);
-        }
-        if (from instanceof JAXBElement) {
-            return castToObject(((JAXBElement) from).getValue(), type);
-        }
-        throw new ClassCastException("Cannot cast " + from + " to " + type);
+        return type.cast(tag);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void afterUnmarshal(Object tag, Object parent) {
-        castToObject(tag, Tag.class).setParentTag(castToObject(parent, ContainerTag.class));
+        if (parent != null) {
+            toTag(tag, Tag.class).setParentTag(toTag(parent, ContainerTag.class));
+        }
     }
 }

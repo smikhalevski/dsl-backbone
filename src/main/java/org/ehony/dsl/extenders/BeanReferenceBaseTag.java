@@ -8,6 +8,7 @@ package org.ehony.dsl.extenders;
 
 import org.ehony.dsl.ContainerBaseTag;
 import org.ehony.dsl.api.ContainerTag;
+import org.ehony.dsl.api.ValidationException;
 
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.*;
@@ -124,7 +125,7 @@ public class BeanReferenceBaseTag<
     @SuppressWarnings("unchecked")
     public Bean getBean() {
         if (beanRef != null) {
-            setBean((Bean) getContext().getBean(beanRef, getRawClass()));
+            setBean((Bean) resolveContext().getBean(beanRef, getRawClass()));
         }
         return bean;
     }
@@ -144,24 +145,24 @@ public class BeanReferenceBaseTag<
     }
 
     @Override
-    public void validate() throws Exception {
+    public void validate() throws ValidationException {
         super.validate();
         if (beanRef == null && bean == null) {
-            throw new IllegalStateException("Bean reference or instance of " + getRawClass() + " required: " + this);
+            throw new ValidationException("Bean reference or instance of " + getRawClass() + " required: " + this);
         }
     }
 
     // <editor-fold desc="Debug">
 
     @Override
-    protected String getDebugInfo() {
-        String info = super.getDebugInfo();
+    public StringBuilder getDebugInfo() {
+        StringBuilder out = super.getDebugInfo();
         if (beanRef != null) {
-            info += "\nref = " + beanRef + "\ntype = " + getRawClass().getName();
+            out.append("\nref = ").append(beanRef).append("\ntype = ").append(getRawClass().getName());
         } else {
-            info += "\nbean = " + bean;
+            out.append("\nbean = ").append(bean);
         }
-        return info;
+        return out;
     }
 
     // </editor-fold>

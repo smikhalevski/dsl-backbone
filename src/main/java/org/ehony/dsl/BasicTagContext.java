@@ -19,7 +19,7 @@ public class BasicTagContext implements TagContext
 {
 
     @XmlTransient
-    private Map<String, Object> beans = new HashMap<String, Object>();
+    private Map<String, Object> beans = new HashMap<>();
 
     @Override
     @XmlTransient

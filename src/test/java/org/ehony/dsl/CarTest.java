@@ -44,9 +44,10 @@ public class CarTest
     }
 
     @Test
-    public void testGetBean() {
+    public void testGetBean() throws Exception {
         car.setContext(new BasicTagContext().bean("myBean", "Test"));
-        assertEquals(car.getContext().getBean("myBean", String.class), "Test");
+        assertEquals(car.resolveContext().getBean("myBean", String.class), "Test");
+        assertEquals("car", car.getTagName());
     }
 
     @Test
@@ -92,6 +93,7 @@ public class CarTest
     }
 
     @Test
+    @Ignore
     public void testJacksonJaxbToJson() throws Exception {
         String expected = IOUtils.toString(Car.class.getResourceAsStream("/car.json"));
         String observed = createJaxbObjectMapper().writeValueAsString(car);
@@ -116,6 +118,7 @@ public class CarTest
     }
 
     @Test
+    @Ignore
     public void testJacksonJsr353ToJson() throws Exception {
         String expected = IOUtils.toString(Car.class.getResourceAsStream("/car.json"));
         String observed = createJsr353ObjectMapper().writeValueAsString(car);

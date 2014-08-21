@@ -22,6 +22,6 @@ public class CarNamespaceHandler extends NamespaceHandlerSupport
 
     @Override
     public void init() {
-        registerBeanDefinitionParser(Car.getClassTagName(Car.class), new TagBeanDefinitionParser(Car.class));
+        registerBeanDefinitionParser("super-car", new TagBeanDefinitionParser(Car.class));
     }
 }

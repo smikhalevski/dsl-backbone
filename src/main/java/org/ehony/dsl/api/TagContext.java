@@ -7,7 +7,7 @@
 package org.ehony.dsl.api;
 
 /**
- * Context of DSL tag.
+ * Interface of DSL tag context.
  */
 public interface TagContext
 {

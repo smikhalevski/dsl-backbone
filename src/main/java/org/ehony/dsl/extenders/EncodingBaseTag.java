@@ -15,7 +15,7 @@ import java.io.*;
 import java.nio.charset.*;
 
 /**
- * Abstract tag-based mixin support of optional <code>encoding</code> attribute.
+ * JAXB annotated tag with optional <code>encoding</code> attribute.
  * <p>Provides basic serialization mechanisms for arbitrary objects.</p>
  * <p>By default instance with default system charset (usually UTF-8) is built.</p>
  * 
@@ -156,8 +156,8 @@ public class EncodingBaseTag<
     // <editor-fold desc="Debug">
 
     @Override
-    protected String getDebugInfo() {
-        return "\nencoding = " + getEncoding() + super.getDebugInfo();
+    public StringBuilder getDebugInfo() {
+        return super.getDebugInfo().append("\nencoding = ").append(getEncoding());
     }
 
     // <editor-fold>

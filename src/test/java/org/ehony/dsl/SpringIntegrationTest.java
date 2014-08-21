@@ -6,8 +6,7 @@
  */
 package org.ehony.dsl;
 
-import org.ehony.dsl.api.Tag;
-import org.example.Car;
+import org.example.*;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -24,9 +23,9 @@ public class SpringIntegrationTest
 
         assertNotNull("Could not retrieve car from context.", car);
 
-        Tag engine = car.getChildren().get(0);
-        assertEquals("Spring proxy failed to find bean.", engine.getContext().getBean("my-car", Car.class), car);
+        Engine engine = (Engine) car.getChildren().get(0);
+        assertEquals("Spring proxy failed to find bean.", engine.resolveContext().getBean("my-car", Car.class), car);
         assertNotNull("Failed to build parent-child relation.", engine.getParentTag());
-        assertEquals(engine.toString(), "engine#M28.01{}");
+        assertEquals(engine.toString(), "engine#M28.01{\n\tcontext = null\n}");
     }
 }

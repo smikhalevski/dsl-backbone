@@ -14,9 +14,10 @@ import javax.xml.namespace.QName;
 import java.beans.Introspector;
 import java.lang.annotation.Annotation;
 import java.util.*;
+import java.util.function.Predicate;
 
 /**
- * Tag is a mixin with optional identifier assignment and arbitrary attributes.
+ * JAXB-annotated implementation of forward tolerant identifiable DSL tag.
  * <p>This class <b>must be</b> annotated {@link XmlTransient} to allow use of
  * {@link XmlValue} annotation on members of subclasses of {@link BaseTag}.</p>
  *
@@ -28,13 +29,13 @@ public class BaseTag<
         Type extends BaseTag<Type, Parent>,
         Parent extends ContainerTag
         >
-        implements Tag<Parent>
+        implements Tag<Parent>,
+                   Identifiable<Type>,
+                   Tolerant<Type>
 {
 
     @XmlTransient
     private String id;
-    @XmlTransient
-    private String name;
     @XmlTransient
     private Parent parent;
     @XmlTransient
@@ -59,48 +60,6 @@ public class BaseTag<
         this.id = id;
     }
 
-    /**
-     * Get human-readable name of this tag.
-     * <p>Returned name <b>does not</b> introspect JAXB annotations and rely only on class name and custom name.
-     * If no custom tag name was defined then camel-cased class name is returned.</p>
-     * 
-     * @return Tag name in bean identifier flavour.
-     * @see #setCustomTagName(String)
-     */
-    @XmlTransient
-    public String getTagName() {
-        if (name == null) {
-            return getClassTagName(getClass());
-        } else {
-            return name;
-        }
-    }
-
-    /**
-     * Extracts name of the tag from JAXB annotations specified for given class.
-     * @param type class to introspect.
-     * @return Effective XML name of the given class.
-     */
-    public static String getClassTagName(Class<?> type) {
-        String name = Introspector.decapitalize(type.getSimpleName());
-        for (Annotation a : type.getAnnotations()) {
-            if (a instanceof XmlRootElement) {
-                name = ((XmlRootElement) a).name();
-            }
-            if (a instanceof XmlElement) {
-                name = ((XmlElement) a).name();
-            }
-            if (a instanceof XmlType) {
-                name = ((XmlType) a).name();
-            }
-        }
-        return name;
-    }
-
-    public void setCustomTagName(String name) {
-        this.name = name;
-    }
-
     @Override
     @XmlTransient
     public Parent getParentTag() {
@@ -112,7 +71,7 @@ public class BaseTag<
     public Parent setParentTag(Parent parent) {
         for (Tag tag = parent; tag != null; tag = tag.getParentTag()) {
             if (this == tag) {
-                throw new IllegalArgumentException("Detected cyclic dependency.");
+                throw new IllegalArgumentException("Cyclic tag reference.");
             }
         }
         Parent tag = this.parent;
@@ -137,13 +96,7 @@ public class BaseTag<
     @Override
     @XmlTransient
     public TagContext getContext() {
-        if (context != null) {
-            return context;
-        }
-        if (parent != null) {
-            return parent.getContext();
-        }
-        return null;
+        return context;
     }
 
     @Override
@@ -151,94 +104,23 @@ public class BaseTag<
         this.context = context;
     }
 
-    /**
-     * Get attributes which were not explicitly defined by schema.
-     */
+    public TagContext resolveContext() {
+        for (Tag tag = this; tag != null; tag = tag.getParentTag()) {
+            if (tag.getContext() != null) {
+                return tag.getContext();
+            }
+        }
+        return null;
+    }
+
+    @Override
     @XmlAnyAttribute
-    public Map<QName, Object> getAttributes() {
+    public Map<QName, Object> getCustomAttributes() {
         if (attributes == null) {
-            attributes = new HashMap<QName, Object>();
+            attributes = new HashMap<>();
         }
         return attributes;
     }
-
-    public void validate() throws Exception {
-        // noop
-    }
-
-    // <editor-fold desc="Fluent API">
-
-    /**
-     * Set identifier of this node.
-     * <p>By default identifier is not set.</p>
-     *
-     * @param id identifier to assign.
-     * @return Original builder instance.
-     */
-    @SuppressWarnings("unchecked")
-    public Type id(String id) {
-        setId(id);
-        return (Type) this;
-    }
-
-    /**
-     * Add an optional attribute with arbitrary qualified name.
-     *
-     * @param name name of the attribute.
-     * @param value value to assign to added attribute.
-     * @return Original builder instance.
-     */
-    @SuppressWarnings("unchecked")
-    public Type attribute(QName name, Object value) {
-        getAttributes().put(name, value);
-        return (Type) this;
-    }
-
-    /**
-     * Add an optional attribute with arbitrary namespace and name.
-     *
-     * @param namespace required namespace.
-     * @param name name of the attribute.
-     * @param value value to assign to added attribute.
-     * @return Original builder instance.
-     */
-    public Type attribute(String namespace, String name, Object value) {
-        return attribute(new QName(namespace, name), value);
-    }
-
-    /**
-     * Add an optional attribute in local namespace.
-     *
-     * @param name local name of the attribute.
-     * @param value value to assign to added attribute.
-     * @return Original builder instance.
-     */
-    public Type attribute(String name, Object value) {
-        return attribute(new QName(name), value);
-    }
-
-    /**
-     * Element finishing strategy.
-     * <p>By default returns parent of this element and tries to implicitly adopt returned type.</p>
-     *
-     * @return Original parent builder instance.
-     */
-    @SuppressWarnings("unchecked")
-    public <T extends Parent> T end() {
-        return (T) getParentTag();
-    }
-
-    /**
-     * Element finishing strategy which explicitly casts parent to given type.
-     * @param type type instance to cast to.
-     * @return Original parent builder instance.
-     */
-    @SuppressWarnings("unchecked")
-    public <T extends Parent> T end(Class<T> type) {
-        return (T) end();
-    }
-
-    // </editor-fold>
 
     // <editor-fold desc="Debug">
 
@@ -249,22 +131,16 @@ public class BaseTag<
      */
     @Override
     public String toString() {
-        return toString(getDebugInfo());
+        return toDebugString(getDebugInfo().toString());
     }
 
     /**
-     * String of tag-describing parameters.
+     * {@link StringBuilder} containing tag-describing parameters.
      * <p><b>Recommended implementation:</b> description of each parameter
      * should start with a line feed character: <code><b>\n</b>key=value</code>.</p>
-     * @return String of parameters.
      */
-    @XmlTransient
-    protected String getDebugInfo() {
-        if (context != null) {
-            return "\ncontext = " + context;
-        } else {
-            return "";
-        }
+    protected StringBuilder getDebugInfo() {
+        return new StringBuilder().append("\ncontext = ").append(getContext());
     }
 
     /**
@@ -272,7 +148,7 @@ public class BaseTag<
      * @param info line feed separated parameters to display for this tag.
      * @see #getDebugInfo()
      */
-    protected String toString(String info) {
+    protected String toDebugString(String info) {
         StringBuilder out = new StringBuilder(getTagName());
         String id = getId();
         if (id != null) {

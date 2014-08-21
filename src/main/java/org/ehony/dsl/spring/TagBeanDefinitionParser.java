@@ -27,8 +27,8 @@ public class TagBeanDefinitionParser extends AbstractBeanDefinitionParser
 
     /**
      * Create new bean parser instance to process tags of given type.
-     * <p>Type annotations and package-info must be compatible with JAXB
-     * requirements.</p>
+     * <p>Type annotations and package-info must be compatible with JAXB requirements.</p>
+     *
      * @param type type of root tag, must not be empty.
      */
     public TagBeanDefinitionParser(Class<? extends Tag> type) {
@@ -36,16 +36,15 @@ public class TagBeanDefinitionParser extends AbstractBeanDefinitionParser
     }
 
     /**
-     * Create new bean parser instance to process tags of given type
-     * and load required classes from provided classpath.
-     * <p>Type annotations and package-info must be compatible with JAXB
-     * requirements.</p>
+     * Create new bean parser instance to process tags of given type and load required classes from provided classpath.
+     * <p>Type annotations and package-info must be compatible with JAXB requirements.</p>
+     *
      * @param type type of root tag.
      * @param classpath colon-separated list of packages for JAXB to load.
      */
     public TagBeanDefinitionParser(Class<? extends Tag> type, String classpath) {
         if (classpath == null) {
-            throw new IllegalArgumentException("Empty classpath.");
+            throw new IllegalArgumentException("Classpath expected.");
         }
         this.type = type;
         this.classpath = classpath;

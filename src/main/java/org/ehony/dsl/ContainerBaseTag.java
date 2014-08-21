@@ -10,6 +10,7 @@ import org.ehony.dsl.api.*;
 
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.List;
+import static java.util.stream.Collectors.*;
 
 @XmlTransient
 public class ContainerBaseTag<
@@ -22,7 +23,7 @@ public class ContainerBaseTag<
 
     @XmlTransient
     @SuppressWarnings("unchecked")
-    private List<Tag<Type>> children = new TagChildren<Type, Tag<Type>>((Type) this);
+    private List<Tag<Type>> children = new TagChildren<>((Type) this);
 
     @Override
     @XmlTransient
@@ -31,44 +32,13 @@ public class ContainerBaseTag<
         return (List) children;
     }
 
-    /**
-     * Append another child tag to container.
-     * <p>If tag is already a child of container it is moved to the end of children list.</p>
-     * @param tag tag to insert.
-     */
-    @SuppressWarnings("unchecked")
-    public <T extends Tag<? extends Type>> T appendChild(T tag) {
-        children.add((Tag<Type>) tag); // The same as tag.setParentTag(this)
-        return tag;
-    }
-
-    @Override
-    public void configureChild(Tag<? extends Type> tag) {
-        // noop
-    }
-
-    /**
-     * {@inheritDoc}
-     * <p>Validation of child tags must also be performed in this method.</p>
-     */
-    @Override
-    public void validate() throws Exception {
-        super.validate();
-        for (Tag<Type> tag : children) {
-            tag.validate();
+    protected StringBuilder getDebugInfo() {
+        StringBuilder out = super.getDebugInfo();
+        out.append("\nchildren = [");
+        if (!getChildren().isEmpty()) {
+            String code = getChildren().stream().map(Tag::toString).collect(joining(",\n"));
+            out.append("\n\t").append(code.replace("\n", "\n\t")).append("\n");
         }
-    }
-
-    @Override
-    protected String getDebugInfo() {
-        String out = super.getDebugInfo();
-        if (!children.isEmpty()) {
-            StringBuilder code = new StringBuilder();
-            for (Tag<Type> tag : children) {
-                code.append(",\n").append(tag);
-            }
-            out += "\nchildren = [\n\t" + code.substring(2).replace("\n", "\n\t") + "\n]";
-        }
-        return out;
+        return out.append("]");
     }
 }
