@@ -32,8 +32,8 @@ Car car = new Car()
             .id("M28.01")
             .gears(5)
             .end() // Jump back to Car.class context.
-        .attribute("brand", "Porsche") // Add custom attribute.
-        .attribute("color", "black")
+        .attribute("petrol", "E95") // Add custom attribute.
+        .attribute("http://ehony.org/", "maintenance-year", "2014");
 ```
 
 <a name="spring-dsl-example"></a>Same configuration in terms of [**DSL for Spring XML**](#spring-xml-context-integration) context:
@@ -41,13 +41,30 @@ Car car = new Car()
 <?xml version="1.0" encoding="utf-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:ns="http://ehony.org/"
        xsi:schemaLocation="
             http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
             http://example.org/ http://example.org/car.xsd">
-    <car xmlns="http://example.org/" id="my-car" brand="Porsche">
+    <car xmlns="http://example.org/" id="my-car" petrol="E95" ns:maintenance-year="2014">
         <engine id="M28.01" gears="5"/>
     </car>
 </beans>
+```
+
+Same configuration in [**JSON DSL**](src/test/java/org/ehony/dsl/CarTest.java#L93)
+```json
+{
+    "id": "my-car",
+    "engine": {
+        "id": "M28.01",
+        "gears": 5
+    },
+    "attributes": {
+        "petrol": "E95",
+        "{http://ehony.org/}maintenance-year": "2014"
+    }
+}
+
 ```
 
 ### Basic Java DSL
