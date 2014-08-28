@@ -250,11 +250,14 @@ DSL Backbone is shipped with several extenders which allow speeding up developme
 
 - Introduce JSON XML Stream API support in separate module.
 - Separate Spring codebase to another artifact.
-- Add documentation for `org.ehony.dsl.TagParentListener`.
-- Implement parent reference for `Tag` using Jackson.
 - Add Spring initialization support for beans, ex. when bean extends `org.springframework.beans.factory.InitializingBean`.
 - Strategy oriented tag validation.
 - Increase test coverage.
+
+### Completed
+
+- Create annotation and related processor to inject annotated fields and method return values as a children of an `ContainerTag`.
+- Implement parent reference for `Tag` using Jackson.
 
 ## Dependencies
 

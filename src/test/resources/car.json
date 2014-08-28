@@ -4,7 +4,7 @@
     "engine": {
         "id": "M28.01",
         "gears": 5,
-        "attributes": {
+        "customAttributes": {
             "petrol": "E95",
             "{http://ehony.org/}maintenance-year": "2014"
         }

@@ -6,12 +6,14 @@
  */
 package org.ehony.dsl.spring;
 
-import org.ehony.dsl.TagParentListener;
+import org.ehony.dsl.NestedTagProcessor;
+import org.ehony.dsl.annotation.AnnotationVisitor;
 import org.ehony.dsl.api.ContainerTag;
+import org.ehony.dsl.api.NestedTag;
 import org.ehony.dsl.api.Tag;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
-import org.springframework.context.*;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.w3c.dom.Element;
 
 import javax.xml.bind.JAXBContext;
@@ -30,6 +32,7 @@ public class TagFactoryBean
     private String classpath;
     private ApplicationContext context;
     private Unmarshaller mapper;
+    private AnnotationVisitor<ContainerTag> visitor;
 
     /**
      * Create new factory bean that can construct bean of given type
@@ -59,9 +62,13 @@ public class TagFactoryBean
     protected Tag createInstance() throws Exception {
         if (mapper == null) {
             mapper = JAXBContext.newInstance(classpath).createUnmarshaller();
-            mapper.setListener(new TagParentListener());
+            visitor = new AnnotationVisitor<>();
+            visitor.bindProcessor(NestedTag.class, new NestedTagProcessor());
         }
         Tag tag = type.cast(mapper.unmarshal(node));
+        if (tag instanceof ContainerTag) {
+            visitor.process((ContainerTag) tag);
+        }
         tag.setContext(new SpringTagContext(context));
         return tag;
     }
