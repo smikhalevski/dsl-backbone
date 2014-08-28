@@ -64,7 +64,6 @@ Same configuration in [**JSON DSL**](src/test/java/org/ehony/dsl/CarTest.java#L9
         "{http://ehony.org/}maintenance-year": "2014"
     }
 }
-
 ```
 
 ### Basic Java DSL
