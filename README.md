@@ -2,6 +2,8 @@
 
 Handy approach to create your own [fluent][1] [domain specific languages][2] with Java, JSON and XML.
 
+**Release 2.0** includes architectural redesigns, uses Java 8 and breaks backward compatibility.
+
 ## Contents
 
 1. [DSL Authoring](#dsl-authoring)
@@ -15,7 +17,6 @@ Handy approach to create your own [fluent][1] [domain specific languages][2] wit
     5. [Extentions](#extentions)
 2. [Features](#features) 
 3. [Roadmap](#roadmap)
-    1. [To Do](#to-do)
 4. [Dependencies](#dependencies)
 5. [License](#license)
 
@@ -238,7 +239,6 @@ DSL Backbone is shipped with several extenders which allow speeding up developme
 ## Features
 
 - OSGi compatible.
-- Supports Java 6 and above.
 - Integration with [Spring](http://spring.io).
 - Serialization support out of the box.
 - Single dependency.
@@ -253,11 +253,6 @@ DSL Backbone is shipped with several extenders which allow speeding up developme
 - Add Spring initialization support for beans, ex. when bean extends `org.springframework.beans.factory.InitializingBean`.
 - Strategy oriented tag validation.
 - Increase test coverage.
-
-### Completed
-
-- Create annotation and related processor to inject annotated fields and method return values as a children of an `ContainerTag`.
-- Implement parent reference for `Tag` using Jackson.
 
 ## Dependencies
 
